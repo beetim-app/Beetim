@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beetim - Sesli Kitap</title>
+    <style>
+        /* --- GENEL AYARLAR --- */
+        html { scroll-behavior: auto; } 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #fcfcfc; color: #333; padding-bottom: 120px; }
+        .container { max-width: 1250px; margin: 0 auto; padding: 0 20px; }
+        svg { display: block; } 
+
+        /* --- ÜST MENÜ --- */
+        header { 
+            background: rgba(255, 255, 255, 0.92); 
+            padding: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            position: sticky; top: 0; z-index: 9999; 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo img { height: 45px; display: block; } 
+        .nav-links a { text-decoration: none; color: #777; font-size: 14px; margin-left: 25px; transition: color 0.2s; font-weight: 500; }
+        .nav-links a:hover { color: #e5a913; }
+        .nav-links a.active { color: #e5a913; font-weight: 700; }
+
+        /* --- HERO --- */
+        .hero-box {
+            background: linear-gradient(135deg, #ffd34d 0%, #eab327 100%);
+            border-radius: 20px; margin: 40px 0; 
+            box-shadow: 0 10px 30px rgba(229, 169, 19, 0.25); 
+            overflow: hidden; display: flex; justify-content: center; align-items: flex-end; padding: 0 40px; 
+        }
+        .hero-box img { width: 100%; max-width: 1000px; height: auto; display: block; cursor: pointer; }
+
+        /* --- KİTAPLAR --- */
+        .books-title { font-size: 20px; font-weight: 700; color: #222; margin: 30px 0 25px; }
+        .books-carousel-container {
+            width: 100%; overflow-x: auto; margin-bottom: 50px; cursor: grab; 
+            -ms-overflow-style: none; scrollbar-width: none; 
+        }
+        .books-carousel-container::-webkit-scrollbar { display: none; }
+        .books-track { display: flex; gap: 20px; width: max-content; padding-bottom: 10px; }
+
+        .book-card { 
+            background: #fff; border-radius: 15px; padding: 15px; text-align: center; 
+            border: 2px solid rgba(229, 169, 19, 0.3); width: 226px; flex-shrink: 0; 
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none; -webkit-user-select: none; 
+        }
+        .book-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(229, 169, 19, 0.2); }
+        .book-card img { width: 100%; border-radius: 8px; margin-bottom: 12px; pointer-events: none; }
+        .book-card h3 { font-size: 14px; font-weight: 700; color: #222; margin-bottom: 5px; pointer-events: none; }
+        .book-card p { font-size: 12px; color: #888; margin-bottom: 15px; pointer-events: none; }
+        
+        .play-btn { 
+            background: #eebd3c; color: white; border: none; border-radius: 50%; 
+            width: 35px; height: 35px; font-size: 14px; display: inline-flex; 
+            align-items: center; justify-content: center; transition: background 0.2s; pointer-events: none; 
+        }
+        .book-card:hover .play-btn { background: #d49c11; transform: scale(1.05); }
+
+        /* --- HAKKIMIZDA --- */
+        .about-section { text-align: center; margin-bottom: 60px; scroll-margin-top: 100px; }
+        .about-section img { width: 110%; max-width: 1200px; display: block; margin: 0 auto; cursor: pointer; }
+
+        /* --- YENİ: İLETİŞİM BÖLÜMÜ --- */
+        .contact-section { text-align: center; margin-bottom: 80px; scroll-margin-top: 100px; }
+        .contact-section img { width: 110%; max-width: 1200px; display: block; margin: 0 auto 30px; cursor: pointer; }
+        .contact-text-box { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+        .contact-text-box p { font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 25px; font-weight: 500; }
+        
+        .contact-buttons { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .contact-btn { 
+            display: inline-flex; align-items: center; gap: 8px; 
+            background: #e5a913; color: #111; text-decoration: none; 
+            padding: 12px 24px; border-radius: 12px; font-weight: bold; font-size: 15px;
+            transition: transform 0.2s, box-shadow 0.2s; 
+        }
+        .contact-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(229,169,19,0.3); }
+        .contact-btn.insta-btn { background: #E1306C; color: #fff; }
+        .contact-btn.insta-btn:hover { box-shadow: 0 5px 15px rgba(225,48,108,0.3); }
+
+        /* --- AKILLI YÜZEN OYNATICI (SARI BAR) --- */
+        .floating-player {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 1210px; background-color: #e5a913; color: #111;
+            border-radius: 15px; padding: 12px 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+            z-index: 10000; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        .fp-left { display: flex; align-items: center; gap: 15px; flex: 1; pointer-events: none;}
+        .fp-thumb { width: 50px; height: 50px; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,0.1); overflow: hidden; }
+        .fp-thumb img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+        .fp-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+        .fp-info p { font-size: 13px; margin: 0; font-weight: 500; opacity: 0.8; }
+        
+        .fp-center { display: flex; align-items: center; gap: 25px; justify-content: center; flex: 1; font-size: 26px; }
+        .fp-control-icon { transition: transform 0.2s; cursor: pointer; position: relative; z-index: 10005; display: flex; align-items: center; justify-content: center; }
+        .fp-control-icon:hover { transform: scale(1.15); }
+        .fp-play { display: inline-flex; align-items: center; justify-content: center; width: 30px; }
+        
+        .fp-right { display: flex; align-items: center; justify-content: flex-end; flex: 1; }
+        .fp-speed { background: rgba(0,0,0,0.1); padding: 5px 12px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; position: relative; z-index: 10005; }
+        .fp-speed:hover { background: rgba(0,0,0,0.2); }
+
+        @media (max-width: 768px) {
+            .floating-player { background-color: #1a1a1a; color: #fff; padding: 12px 20px; border-radius: 12px; }
+            .fp-thumb { border-color: rgba(255,255,255,0.1); }
+            .fp-hide-mobile { display: none !important; } 
+            .fp-center { flex: 0; justify-content: flex-end; } 
+        }
+
+        /* =========================================================
+           KUSURSUZ SİMETRİK TAM EKRAN MOBİL OYNATICI
+           ========================================================= */
+        .mobile-full-player-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); z-index: 9999999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.4s; }
+        .mobile-full-player-overlay.goster { opacity: 1; visibility: visible; }
+        
+        .mobile-full-player-content { 
+            background: #212121; border-radius: 28px; width: 90%; max-width: 360px; 
+            padding: 50px 25px 35px; text-align: center; position: relative; color: white; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6); transform: translateY(50px); transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); 
+        }
+        .mobile-full-player-overlay.goster .mobile-full-player-content { transform: translateY(0); }
+        
+        .mobile-full-player-content h3 { font-size: 22px; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.5px; }
+        .mobile-full-player-content .subtitle { font-size: 15px; color: #a1a1a6; margin-bottom: 45px; }
+        
+        .full-player-controls { display: flex; align-items: center; justify-content: space-between; padding: 0 10px; margin-bottom: 40px; }
+        
+        .control-action { color: #a1a1a6; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .control-action.aktif { color: #ffffff; }
+        
+        .control-skip { color: #fff; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .control-skip:hover { transform: scale(1.1); color: #e5a913; }
+        
+        .play-circle-big { 
+            background: white; color: black; width: 72px; height: 72px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; transition: transform 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .play-circle-big:hover { transform: scale(1.05); }
+
+        .timeline-container { margin-bottom: 30px; padding: 0 5px; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.2); height: 4px; border-radius: 2px; outline: none; cursor: pointer; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: 0.1s; }
+        input[type=range]:active::-webkit-slider-thumb { transform: scale(1.3); }
+        .time-labels { display: flex; justify-content: space-between; color: #a1a1a6; font-size: 11px; margin-top: 10px; font-weight: 500; }
+        
+        .full-bottom-controls { display: flex; align-items: center; justify-content: space-between; padding: 0 5px; }
+        .full-bottom-controls .speed-btn { background: #333336; color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .full-bottom-controls .speed-btn:hover { background: #444448; }
+        
+        .volume-wrapper { display: flex; align-items: center; width: 70%; justify-content: flex-end; }
+        .vol-icon { margin-right: 12px; color: #a1a1a6; display: flex; align-items: center; cursor: pointer; transition: opacity 0.3s; } 
+
+        /* --- ORTAK POPUP SİSTEMİ --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 999999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.4s; }
+        .modal-overlay.goster { opacity: 1; visibility: visible; }
+        
+        .modal-content { background: white; padding: 40px 30px; border-radius: 24px; width: 90%; max-width: 420px; text-align: center; transform: scale(0.8); transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+        .modal-overlay.goster .modal-content { transform: scale(1); }
+        .modal-content h3 { color: #222; margin-bottom: 15px; font-size: 22px; font-weight: 700;}
+        .modal-content p { color: #555; font-size: 15px; line-height: 1.6; margin-bottom: 25px; }
+
+        .platform-selection { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+        .platform-btn { width: 100%; max-width: 160px; cursor: pointer; transition: transform 0.2s; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .platform-btn:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .platform-btn img { width: 100%; height: auto; display: block; }
+
+        .instruction-list { text-align: left; margin-bottom: 25px; background: #f9f9f9; padding: 20px; border-radius: 15px; }
+        .instruction-list p { margin-bottom: 12px; font-size: 14.5px; border-bottom: 1px solid #eaeaea; padding-bottom: 10px; color: #444; }
+        .instruction-list p:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+        /* --- GİRİŞ ANİMASYONU --- */
+        #introScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10000000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s ease; cursor: pointer;
+        }
+        .intro-logo { width: 250px; height: 250px; border-radius: 50%; background: #fff; padding: 15px; box-shadow: 0 0 0 0 rgba(229, 169, 19, 0.7); animation: introPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, pulse 2s 0.8s infinite; }
+        .intro-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+        @keyframes introPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 169, 19, 0.7); } 70% { transform: scale(1.15); box-shadow: 0 0 0 40px rgba(229, 169, 19, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 169, 19, 0); } }
+    </style>
+</head>
+<body>
+
+    <div id="introScreen">
+        <div class="intro-logo">
+            <img src="intro-logo.png" alt="Beetim Intro Logo" onerror="this.src='https://via.placeholder.com/250x250/e5a913/fff?text=B'">
+        </div>
+    </div>
+
+    <div id="welcomeModal" class="modal-overlay modal-close-trigger">
+        <div class="modal-content">
+            <h3>🐝 Hoş Geldin</h3>
+            <p>Merhaba, Beetim'e hoş geldin. Farenle üzerine geldiğin veya dokunduğun metni senin için seslendirmemi ister misin?<br><br>Eğer onaylıyorsan <b>İstiyorum</b> seçeneğine tıklayabilirsin. Unutma, bunu istediğin zaman açıp kapatabilirsin.</p>
+            <div style="display: flex; gap: 10px;">
+                <button id="btnIstiyorum" style="flex: 1; background: #e5a913; color: #111; border: none; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;">İstiyorum</button>
+                <button id="btnIstemiyorum" style="flex: 1; background: #e74c3c; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;">İstemiyorum</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="downloadSelectionModal" class="modal-overlay modal-close-trigger">
+        <div class="modal-content">
+            <h3>📱 Platformunu Seç</h3>
+            <p>Cihazınıza uygun seçeneğe tıklayabilirsiniz.</p>
+            <div class="platform-selection">
+                <div class="platform-btn" id="btnSelectAndroid" data-hover-ses="hover-android.mp3">
+                    <img src="android-indir.png" alt="Android İçin İndir" onerror="this.src='https://via.placeholder.com/200x80/2ecc71/fff?text=Android'">
+                </div>
+                <div class="platform-btn" id="btnSelectIOS" data-hover-ses="hover-ios.mp3">
+                    <img src="ios-indir.png" alt="iOS İçin İndir" onerror="this.src='https://via.placeholder.com/200x80/111/fff?text=iOS'">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="androidInstructionsModal" class="modal-overlay modal-close-trigger">
+        <div class="modal-content">
+            <h3>📥 İndirme Başlatılıyor...</h3>
+            <p style="color: #2ecc71; font-weight: bold; margin-bottom: 15px;">Beetim uygulaması cihazınıza indiriliyor.</p>
+            <div class="instruction-list">
+                <p><strong>1.</strong> İnen <b>Beetim.apk</b> dosyasına tıklayın.</p>
+                <p><strong>2.</strong> Tarayıcınız güvenlik uyarısı verirse <b>Ayarlar</b>'a gidin.</p>
+                <p><strong>3.</strong> <b>Bu kaynaktan izin ver</b> seçeneğini aktifleştirin.</p>
+                <p><strong>4.</strong> Geri dönüp <b>Yükle</b> butonuna basarak işlemi tamamlayın.</p>
+            </div>
+            <button class="modal-close-btn" style="background: #222; color: white; border: none; padding: 14px 20px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer;">Anladım, Teşekkürler</button>
+        </div>
+    </div>
+
+    <div id="iosInstructionsModal" class="modal-overlay modal-close-trigger">
+        <div class="modal-content">
+            <h3>🍏 iPhone Kurulumu</h3>
+            <p style="margin-bottom: 15px;">iOS cihazlarda uygulamamızı doğrudan tarayıcı üzerinden cihazınıza kurabilirsiniz.</p>
+            <div class="instruction-list">
+                <p><strong>1.</strong> Safari'nin alt menüsünde bulunan <b>Paylaş</b> (Kare içinden çıkan ok) ikonuna dokunun.</p>
+                <p><strong>2.</strong> Açılan listeyi aşağı kaydırın ve <b>Ana Ekrana Ekle</b> seçeneğini seçin.</p>
+                <p><strong>3.</strong> Sağ üst köşedeki <b>Ekle</b> butonuna basarak kurulumu bitirin!</p>
+            </div>
+            <button class="modal-close-btn" style="background: #222; color: white; border: none; padding: 14px 20px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer;">Anladım, Teşekkürler</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="container header-inner">
+            <div class="logo">
+                <img src="logo.png" alt="Beetim Logo" onerror="this.src='https://via.placeholder.com/150x45?text=Logo'">
+            </div>
+            <nav class="nav-links">
+                <a href="#hakkimizda-bolumu" id="hakkimizda-link" data-hover-ses="menu-hakkimizda.mp3">Hakkımızda</a>
+                <a href="#" id="uygulamayi-indir" class="active" data-hover-ses="menu-indir.mp3">Uygulamayı İndir</a>
+                <a href="#iletisim-bolumu" id="iletisim-link" data-hover-ses="menu-iletisim.mp3">İletişim</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="hero-box">
+            <img src="hero.png" data-hover-ses="afis-hero.mp3" alt="Satranç Afişi" onerror="this.src='https://via.placeholder.com/1200x500/e5a913/fff?text=Satranc+Afisi+PNG'">
+        </section>
+
+        <h2 class="books-title">Yeni Çıkan Sesli Kitaplar</h2>
+        
+        <div class="books-carousel-container" id="carouselContainer">
+            <div class="books-track" id="booksTrack">
+                <div class="book-card" onclick="kitapSec('Güneşin Oğlu', 'Jack London', 'kitap1.png', '', 0)" data-hover-ses="kitap-gunesin-oglu.mp3">
+                    <img src="kitap1.png" alt="Güneşin Oğlu" onerror="this.src='https://via.placeholder.com/150x150/eee/333?text=Kitap'">
+                    <h3>Güneşin Oğlu</h3><p>Jack London</p>
+                    <div class="play-btn">▶</div>
+                </div>
+                <div class="book-card" onclick="kitapSec('Öğrenci Kız', 'Osamu Dazai', 'kitap2.png', 'ogrenci-kiz-seslikitap.mp3', 1)" data-hover-ses="kitap-ogrenci-kiz.mp3">
+                    <img src="kitap2.png" alt="Öğrenci Kız" onerror="this.src='https://via.placeholder.com/150x150/eee/333?text=Kitap'">
+                    <h3>Öğrenci Kız</h3><p>Osamu Dazai</p>
+                    <div class="play-btn">▶</div>
+                </div>
+                <div class="book-card" onclick="kitapSec('Satranç', 'Stefan Zweig', 'kitap3.png', '', 2)" data-hover-ses="kitap-satranc.mp3">
+                    <img src="kitap3.png" alt="Satranç" onerror="this.src='https://via.placeholder.com/150x150/eee/333?text=Kitap'">
+                    <h3>Satranç</h3><p>Stefan Zweig</p>
+                    <div class="play-btn">▶</div>
+                </div>
+                <div class="book-card" onclick="kitapSec('Mutlu Prens', 'Oscar Wilde', 'kitap4.png', 'mutlu-prens-seslikitap.mp3', 3)" data-hover-ses="kitap-mutlu-prens.mp3">
+                    <img src="kitap4.png" alt="Mutlu Prens" onerror="this.src='https://via.placeholder.com/150x150/eee/333?text=Kitap'">
+                    <h3>Mutlu Prens</h3><p>Oscar Wilde</p>
+                    <div class="play-btn">▶</div>
+                </div>
+            </div>
+        </div>
+
+        <section class="about-section" id="hakkimizda-bolumu">
+            <img src="hakkimizda.png" data-hover-ses="afis-hakkimizda.mp3" alt="Hakkımızda" onerror="this.src='https://via.placeholder.com/1100x400/fff/333?text=Hakkimizda+PNG'">
+        </section>
+
+        <section class="contact-section" id="iletisim-bolumu">
+            <img src="iletisim.png" data-hover-ses="afis-iletisim.mp3" alt="İletişim" onerror="this.src='https://via.placeholder.com/1100x400/fff/333?text=Iletisim+PNG'">
+            
+            <div class="contact-text-box">
+                <p>Görüşleriniz bizim için çok değerli! Beetim ile ilgili her türlü soru, öneri ve talepleriniz için bizimle iletişime geçebilirsiniz. Geri bildirimleriniz, sesli kitap dünyamızı daha erişilebilir kılmamıza yardımcı oluyor.</p>
+                
+                <div class="contact-buttons">
+                    <a href="mailto:beetiminc@gmail.com" class="contact-btn">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        beetiminc@gmail.com
+                    </a>
+                    <a href="https://www.instagram.com/beetim.app/" target="_blank" class="contact-btn insta-btn">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.4 5.6 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.6 18.4 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25zM12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+                        @beetim.app
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="floating-player" id="mainPlayerBar">
+        <div class="fp-left">
+            <div class="fp-thumb">
+                <img src="logo.png" id="fpImg" alt="Beetim" onerror="this.src='https://via.placeholder.com/50x50/e5a913/111?text=B'">
+            </div>
+            <div class="fp-info">
+                <h4 id="fpTitle">Sesli Kitap</h4>
+                <p id="fpAuthor">Seçim bekleniyor...</p>
+            </div>
+        </div>
+        <div class="fp-center">
+            <span class="fp-control-icon fp-hide-mobile" id="fpPrevBtn">
+                <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+            </span>
+            <span class="fp-play fp-control-icon" id="fpPlayBtn">
+                <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+            <span class="fp-control-icon fp-hide-mobile" id="fpNextBtn">
+                <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            </span>
+        </div>
+        <div class="fp-right fp-hide-mobile">
+            <span class="fp-speed" id="fpSpeedBtn">1x</span>
+        </div>
+    </div>
+
+    <div class="mobile-full-player-overlay modal-close-trigger" id="mobilePlayerModal">
+        <div class="mobile-full-player-content" onclick="event.stopPropagation();">
+            <h3 id="modalTitle">Sesli Kitap</h3>
+            <p class="subtitle" id="modalAuthor">Seçim bekleniyor...</p>
+            
+            <div class="full-player-controls">
+                <span class="control-action" id="modalShuffleBtn">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+                </span> 
+                <span class="control-skip" id="modalPrevBtn">
+                    <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                </span>
+                <div class="play-circle-big" id="modalPlayBtn">
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <span class="control-skip" id="modalNextBtn">
+                    <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </span>
+                <span class="control-action" id="modalRepeatBtn">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                </span> 
+            </div>
+            
+            <div class="timeline-container">
+                <input type="range" id="modalProgressRange" min="0" max="100" value="0" step="0.1" style="background: linear-gradient(to right, #fff 0%, rgba(255,255,255,0.2) 0%);">
+                <div class="time-labels">
+                    <span id="modalCurrentTime">0:00</span>
+                    <span id="modalTotalTime">0:00</span>
+                </div>
+            </div>
+            
+            <div class="full-bottom-controls">
+                <div class="speed-btn" id="modalSpeedBtn">1x</div>
+                <div class="volume-wrapper">
+                    <span class="vol-icon" id="modalVolIcon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    </span> 
+                    <input type="range" id="modalVolumeRange" min="0" max="1" step="0.01" value="1" style="background: linear-gradient(to right, #fff 100%, rgba(255,255,255,0.2) 100%);">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // GİRİŞ EKRANI VE ERİŞİLEBİLİRLİK ONAYI
+        // ==========================================
+        let isHoverSpeechEnabled = false; 
+        const introScreen = document.getElementById('introScreen');
+        const welcomeModal = document.getElementById('welcomeModal');
+        let welcomeAudio = new Audio('welcome.mp3');
+
+        introScreen.addEventListener('click', function() {
+            introScreen.style.opacity = '0';
+            introScreen.style.visibility = 'hidden';
+            setTimeout(() => {
+                welcomeModal.classList.add('goster');
+                welcomeAudio.play().catch(err => {});
+            }, 600);
+        });
+
+        document.getElementById('btnIstiyorum').addEventListener('click', () => {
+            isHoverSpeechEnabled = true; 
+            welcomeModal.classList.remove('goster');
+            welcomeAudio.pause(); 
+        });
+
+        document.getElementById('btnIstemiyorum').addEventListener('click', () => {
+            isHoverSpeechEnabled = false; 
+            welcomeModal.classList.remove('goster');
+            welcomeAudio.pause(); 
+        });
+
+        // ==========================================
+        // TIKLANDIĞINDA ÇALAN (MODAL) SES SİSTEMİ
+        // ==========================================
+        let modalClickAudioObj = new Audio();
+
+        function calModalSesi(sesDosyasi) {
+            if(!isHoverSpeechEnabled) return; 
+            hoverAudioObj.pause();
+            clearInterval(fadeOutInterval);
+            
+            modalClickAudioObj.src = sesDosyasi;
+            modalClickAudioObj.currentTime = 0;
+            modalClickAudioObj.play().catch(e => {});
+        }
+
+        function susturModalSesi() {
+            modalClickAudioObj.pause();
+        }
+
+        // ==========================================
+        // UYGULAMA İNDİRME MANTIĞI VE YÖNERGELER
+        // ==========================================
+        const indirButon = document.getElementById('uygulamayi-indir');
+        const downloadSelectionModal = document.getElementById('downloadSelectionModal');
+        const btnSelectAndroid = document.getElementById('btnSelectAndroid');
+        const btnSelectIOS = document.getElementById('btnSelectIOS');
+        const androidInstructionsModal = document.getElementById('androidInstructionsModal');
+        const iosInstructionsModal = document.getElementById('iosInstructionsModal');
+
+        if(indirButon) {
+            indirButon.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                downloadSelectionModal.classList.add('goster');
+                calModalSesi('secim-ekrani.mp3'); 
+            });
+        }
+
+        btnSelectAndroid.addEventListener('click', () => {
+            downloadSelectionModal.classList.remove('goster');
+            androidInstructionsModal.classList.add('goster');
+            calModalSesi('yonerge-android.mp3'); 
+            
+            var indir = document.createElement('a');
+            indir.href = 'Beetim.apk';
+            indir.setAttribute('download', 'Beetim.apk');
+            document.body.appendChild(indir);
+            indir.click(); 
+            document.body.removeChild(indir);
+        });
+
+        btnSelectIOS.addEventListener('click', () => {
+            downloadSelectionModal.classList.remove('goster');
+            iosInstructionsModal.classList.add('goster');
+            calModalSesi('yonerge-ios.mp3'); 
+        });
+
+        document.querySelectorAll('.modal-close-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.target.closest('.modal-overlay').classList.remove('goster');
+                susturModalSesi();
+            });
+        });
+
+        document.querySelectorAll('.modal-close-trigger').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if(e.target === modal) {
+                    modal.classList.remove('goster');
+                    susturModalSesi();
+                }
+            });
+        });
+
+        // ==========================================
+        // HOVER TO SPEECH SİSTEMİ
+        // ==========================================
+        let hoverAudioObj = new Audio();
+        let fadeOutInterval;
+
+        function baslatSes(e) {
+            if(!isHoverSpeechEnabled) return; 
+            let el = e.currentTarget;
+            if(!el.hasAttribute('data-hover-ses')) return;
+            clearInterval(fadeOutInterval);
+            if (hoverAudioObj.src !== el.getAttribute('data-hover-ses')) {
+                hoverAudioObj.src = el.getAttribute('data-hover-ses');
+            }
+            hoverAudioObj.currentTime = 0; 
+            hoverAudioObj.volume = 1;
+            hoverAudioObj.play().catch(err => {});
+        }
+
+        function durdurSes() {
+            if(!isHoverSpeechEnabled) return; 
+            clearInterval(fadeOutInterval);
+            fadeOutInterval = setInterval(() => {
+                let yeniSes = hoverAudioObj.volume - 0.05;
+                if (yeniSes > 0.01) { hoverAudioObj.volume = yeniSes; } 
+                else { hoverAudioObj.pause(); hoverAudioObj.volume = 1; clearInterval(fadeOutInterval); }
+            }, 10); 
+        }
+
+        document.querySelectorAll('[data-hover-ses]').forEach(el => {
+            el.addEventListener('mouseenter', baslatSes);
+            el.addEventListener('mouseleave', durdurSes);
+        });
+
+        // ==========================================
+        // YENİ: SİNEMATİK YUMUŞAK KAYDIRMA MOTORU
+        // ==========================================
+        function smoothScrollTo(targetId) {
+            const target = document.getElementById(targetId);
+            if(!target) return;
+            const targetPosition = target.getBoundingClientRect().top + window.scrollY - 90; 
+            const startPosition = window.scrollY;
+            const distance = targetPosition - startPosition;
+            const duration = 1000; 
+            let start = null;
+            function step(timestamp) {
+                if (!start) start = timestamp;
+                const progress = timestamp - start;
+                const ease = progress < duration / 2 ? 4 * Math.pow(progress / duration, 3) : 1 - Math.pow(-2 * progress / duration + 2, 3) / 2;
+                window.scrollTo(0, startPosition + distance * ease);
+                if (progress < duration) window.requestAnimationFrame(step);
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        const hakkimizdaLink = document.getElementById('hakkimizda-link');
+        if(hakkimizdaLink) {
+            hakkimizdaLink.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                smoothScrollTo('hakkimizda-bolumu');
+            });
+        }
+        
+        // Yeni İletişim tuşu kaydırması
+        const iletisimLink = document.getElementById('iletisim-link');
+        if(iletisimLink) {
+            iletisimLink.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                smoothScrollTo('iletisim-bolumu');
+            });
+        }
+
+        // ==========================================
+        // GERÇEK SESLİ KİTAP OYNATICI 
+        // ==========================================
+        let mainAudioBook = new Audio();
+        let isDragging = false; 
+        
+        const svgPlaySmall = `<svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+        const svgPauseSmall = `<svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+        const svgPlayBig = `<svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+        const svgPauseBig = `<svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+
+        const playlist = [
+            { isim: 'Güneşin Oğlu', yazar: 'Jack London', resim: 'kitap1.png', ses: '' },
+            { isim: 'Öğrenci Kız', yazar: 'Osamu Dazai', resim: 'kitap2.png', ses: 'ogrenci-kiz-seslikitap.mp3' },
+            { isim: 'Satranç', yazar: 'Stefan Zweig', resim: 'kitap3.png', ses: '' },
+            { isim: 'Mutlu Prens', yazar: 'Oscar Wilde', resim: 'kitap4.png', ses: 'mutlu-prens-seslikitap.mp3' }
+        ];
+        let currentBookIndex = -1;
+
+        function kitapSec(isim, yazar, resim, sesDosyasi, index) {
+            if(isDragging) return; 
+            currentBookIndex = index;
+
+            document.getElementById('fpImg').src = resim;
+            document.getElementById('fpImg').style.padding = '0'; 
+            document.getElementById('fpTitle').innerText = isim;
+            document.getElementById('fpAuthor').innerText = yazar;
+            document.getElementById('modalTitle').innerText = isim;
+            document.getElementById('modalAuthor').innerText = yazar;
+            
+            if(sesDosyasi && sesDosyasi !== "") {
+                mainAudioBook.src = sesDosyasi;
+                mainAudioBook.play(); 
+                gorselleriGuncelle(true); 
+            } else {
+                mainAudioBook.pause();
+                mainAudioBook.src = "";
+                gorselleriGuncelle(false); 
+            }
+        }
+
+        function gorselleriGuncelle(isObjPlaying) {
+            const btnFp = document.getElementById('fpPlayBtn');
+            const btnMod = document.getElementById('modalPlayBtn');
+            
+            if(isObjPlaying) {
+                btnFp.innerHTML = svgPauseSmall;
+                btnMod.innerHTML = svgPauseBig;
+            } else {
+                btnFp.innerHTML = svgPlaySmall;
+                btnMod.innerHTML = svgPlayBig;
+            }
+        }
+
+        function oynatDurdurToggle(e) {
+            e.stopPropagation(); 
+            if(!mainAudioBook.src || mainAudioBook.src.endsWith(window.location.pathname)) return; 
+            if(mainAudioBook.paused) { mainAudioBook.play(); gorselleriGuncelle(true); } 
+            else { mainAudioBook.pause(); gorselleriGuncelle(false); }
+        }
+        document.getElementById('fpPlayBtn').addEventListener('click', oynatDurdurToggle);
+        document.getElementById('modalPlayBtn').addEventListener('click', oynatDurdurToggle);
+
+        function oncekiKitap(e) {
+            e.stopPropagation();
+            if(currentBookIndex === -1) return;
+            let targetIndex = (currentBookIndex - 1 + playlist.length) % playlist.length;
+            let b = playlist[targetIndex];
+            kitapSec(b.isim, b.yazar, b.resim, b.ses, targetIndex);
+        }
+        function sonrakiKitap(e) {
+            e.stopPropagation();
+            if(currentBookIndex === -1) return;
+            let targetIndex = (currentBookIndex + 1) % playlist.length;
+            let b = playlist[targetIndex];
+            kitapSec(b.isim, b.yazar, b.resim, b.ses, targetIndex);
+        }
+        document.getElementById('fpPrevBtn').addEventListener('click', oncekiKitap);
+        document.getElementById('modalPrevBtn').addEventListener('click', oncekiKitap);
+        document.getElementById('fpNextBtn').addEventListener('click', sonrakiKitap);
+        document.getElementById('modalNextBtn').addEventListener('click', sonrakiKitap);
+
+        const hizSecenekleri = [1, 1.25, 1.5, 2, 0.5];
+        let hizIndex = 0;
+        function hizDegistir(e) {
+            e.stopPropagation();
+            hizIndex = (hizIndex + 1) % hizSecenekleri.length;
+            mainAudioBook.playbackRate = hizSecenekleri[hizIndex];
+            document.getElementById('fpSpeedBtn').innerText = hizSecenekleri[hizIndex] + 'x';
+            document.getElementById('modalSpeedBtn').innerText = hizSecenekleri[hizIndex] + 'x';
+        }
+        document.getElementById('fpSpeedBtn').addEventListener('click', hizDegistir);
+        document.getElementById('modalSpeedBtn').addEventListener('click', hizDegistir);
+
+        let isShuffle = false;
+        let isRepeat = false;
+        const btnShuffle = document.getElementById('modalShuffleBtn');
+        const btnRepeat = document.getElementById('modalRepeatBtn');
+
+        btnShuffle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isShuffle = !isShuffle;
+            btnShuffle.classList.toggle('aktif', isShuffle);
+        });
+
+        btnRepeat.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isRepeat = !isRepeat;
+            btnRepeat.classList.toggle('aktif', isRepeat);
+        });
+
+        const modalProgressRange = document.getElementById('modalProgressRange');
+        const modalVolumeRange = document.getElementById('modalVolumeRange');
+
+        function updateRangeBackground(el, value) {
+            el.style.background = `linear-gradient(to right, #fff ${value}%, rgba(255,255,255,0.2) ${value}%)`;
+        }
+
+        modalVolumeRange.addEventListener('input', (e) => {
+            if(isMuted) {
+                isMuted = false;
+                volIcon.style.opacity = '1';
+                clearInterval(volumeFadeInterval);
+            }
+            mainAudioBook.volume = e.target.value;
+            updateRangeBackground(modalVolumeRange, e.target.value * 100);
+        });
+
+        modalProgressRange.addEventListener('input', (e) => {
+            if(mainAudioBook.duration) {
+                mainAudioBook.currentTime = (e.target.value / 100) * mainAudioBook.duration;
+                updateRangeBackground(modalProgressRange, e.target.value);
+            }
+        });
+
+        mainAudioBook.addEventListener('timeupdate', () => {
+            if(mainAudioBook.duration) {
+                const yuzde = (mainAudioBook.currentTime / mainAudioBook.duration) * 100;
+                modalProgressRange.value = yuzde;
+                updateRangeBackground(modalProgressRange, yuzde);
+                
+                document.getElementById('modalCurrentTime').innerText = zamaniBicimlendir(mainAudioBook.currentTime);
+                document.getElementById('modalTotalTime').innerText = zamaniBicimlendir(mainAudioBook.duration);
+            }
+        });
+
+        function zamaniBicimlendir(saniye) {
+            if(isNaN(saniye)) return "0:00";
+            const dk = Math.floor(saniye / 60);
+            const sn = Math.floor(saniye % 60);
+            return dk + ":" + (sn < 10 ? "0" + sn : sn);
+        }
+
+        const volIcon = document.getElementById('modalVolIcon');
+        let isMuted = false;
+        let previousVolume = 1; 
+        let volumeFadeInterval;
+
+        volIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            clearInterval(volumeFadeInterval);
+            
+            if (!isMuted) {
+                previousVolume = mainAudioBook.volume || 1;
+                isMuted = true;
+                volIcon.style.opacity = '0.4'; 
+
+                volumeFadeInterval = setInterval(() => {
+                    let newVol = mainAudioBook.volume - 0.05;
+                    if (newVol > 0) {
+                        mainAudioBook.volume = newVol;
+                        modalVolumeRange.value = newVol;
+                        updateRangeBackground(modalVolumeRange, newVol * 100);
+                    } else {
+                        mainAudioBook.volume = 0;
+                        modalVolumeRange.value = 0;
+                        updateRangeBackground(modalVolumeRange, 0);
+                        clearInterval(volumeFadeInterval);
+                    }
+                }, 20);
+            } else {
+                isMuted = false;
+                volIcon.style.opacity = '1'; 
+                
+                volumeFadeInterval = setInterval(() => {
+                    let newVol = mainAudioBook.volume + 0.05;
+                    if (newVol < previousVolume) {
+                        mainAudioBook.volume = newVol;
+                        modalVolumeRange.value = newVol;
+                        updateRangeBackground(modalVolumeRange, newVol * 100);
+                    } else {
+                        mainAudioBook.volume = previousVolume;
+                        modalVolumeRange.value = previousVolume;
+                        updateRangeBackground(modalVolumeRange, previousVolume * 100);
+                        clearInterval(volumeFadeInterval);
+                    }
+                }, 20);
+            }
+        });
+
+        // ==========================================
+        // OYNATICI AÇMA SİSTEMİ
+        // ==========================================
+        const mainBar = document.getElementById('mainPlayerBar');
+        const playerModal = document.getElementById('mobilePlayerModal');
+
+        if(mainBar && playerModal) {
+            mainBar.addEventListener('click', () => playerModal.classList.add('goster'));
+        }
+
+        const slider = document.getElementById('carouselContainer');
+        const track = document.getElementById('booksTrack');
+        const cards = Array.from(track.children);
+        
+        for(let i = 0; i < 10; i++) {
+            cards.forEach(card => {
+                let clone = card.cloneNode(true);
+                clone.onclick = card.onclick; 
+                clone.addEventListener('mouseenter', baslatSes);
+                clone.addEventListener('mouseleave', durdurSes);
+                track.appendChild(clone);
+            });
+        }
+
+        let isDown = false; let startX; let scrollLeft;
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true; isDragging = false; slider.style.cursor = 'grabbing';
+            startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => { isDown = false; slider.style.cursor = 'grab'; });
+        slider.addEventListener('mouseup', () => { isDown = false; slider.style.cursor = 'grab'; setTimeout(() => isDragging = false, 10); });
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX); 
+            if(Math.abs(walk) > 5) { isDragging = true; }
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    </script>
+</body>
+</html>

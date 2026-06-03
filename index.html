@@ -29,8 +29,12 @@
             position: sticky; top: 0; z-index: 9999; 
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
-        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; position: relative; }
         .logo img { height: 45px; display: block; } 
+        
+        /* Hamburger Menü Butonu (Sadece mobilde görünecek) */
+        .menu-toggle { display: none; cursor: pointer; padding: 5px; }
+
         .nav-links a { text-decoration: none; color: #777; font-size: 14px; margin-left: 25px; transition: color 0.2s; font-weight: 500; }
         .nav-links a:hover { color: #e5a913; }
         .nav-links a.active { color: #e5a913; font-weight: 700; }
@@ -74,10 +78,11 @@
         /* --- HAKKIMIZDA --- */
         .about-section { text-align: center; margin-bottom: 60px; scroll-margin-top: 100px; }
         .about-section img { width: 110%; max-width: 1200px; display: block; margin: 0 auto; cursor: pointer; }
+        .hakkimizda-mobile { display: none !important; } /* Mobilde çıkacak resmi masaüstünde gizle */
 
         /* --- YENİ: İLETİŞİM BÖLÜMÜ --- */
         .contact-section { text-align: center; margin-bottom: 80px; scroll-margin-top: 100px; }
-        .contact-section img { width: 110%; max-width: 1200px; display: block; margin: 0 auto 30px; cursor: pointer; }
+        .contact-section img { width: 100%; max-width: 450px; display: block; margin: 0 auto 30px; cursor: pointer; }
         .contact-text-box { max-width: 800px; margin: 0 auto; padding: 0 20px; }
         .contact-text-box p { font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 25px; font-weight: 500; }
         
@@ -114,13 +119,6 @@
         .fp-right { display: flex; align-items: center; justify-content: flex-end; flex: 1; }
         .fp-speed { background: rgba(0,0,0,0.1); padding: 5px 12px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; position: relative; z-index: 10005; }
         .fp-speed:hover { background: rgba(0,0,0,0.2); }
-
-        @media (max-width: 768px) {
-            .floating-player { background-color: #1a1a1a; color: #fff; padding: 12px 20px; border-radius: 12px; }
-            .fp-thumb { border-color: rgba(255,255,255,0.1); }
-            .fp-hide-mobile { display: none !important; } 
-            .fp-center { flex: 0; justify-content: flex-end; } 
-        }
 
         /* =========================================================
            KUSURSUZ SİMETRİK TAM EKRAN MOBİL OYNATICI
@@ -192,6 +190,62 @@
         .intro-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
         @keyframes introPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 169, 19, 0.7); } 70% { transform: scale(1.15); box-shadow: 0 0 0 40px rgba(229, 169, 19, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 169, 19, 0); } }
+
+        /* =========================================================
+           MOBİL GÖRÜNÜM DÜZENLEMELERİ (SADECE MOBİL İÇİN)
+           ========================================================= */
+        @media (max-width: 768px) {
+            /* Üst Menü / Header */
+            header { background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; padding: 12px 0; }
+            .menu-toggle { display: block; } /* 3 çizgiyi mobilde göster */
+            
+            /* Mobilde Linkleri Gizle ve Açılır Menü Yap */
+            .nav-links {
+                display: none; 
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #ffffff;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+                border-top: 1px solid #f1f1f1;
+            }
+            .nav-links.menu-acik { display: flex; } /* JS ile tetiklenecek sınıf */
+            .nav-links a { 
+                margin: 0; 
+                padding: 16px 20px; 
+                font-size: 16px; 
+                border-bottom: 1px solid #f5f5f5; 
+                text-align: left; 
+                display: block; 
+            }
+            .nav-links a:last-child { border-bottom: none; }
+
+            /* Hero (Sarı Afiş) */
+            .hero-box { margin: 20px 0; padding: 0 15px; border-radius: 12px; }
+
+            /* Kitaplar (Yanyana 2 tane durması için) */
+            .books-track { gap: 12px; } /* Kartlar arası boşluk kısaltıldı */
+            .book-card { width: 145px; padding: 10px; border-radius: 12px; }
+            .book-card h3 { font-size: 13px; }
+            .book-card p { font-size: 11px; margin-bottom: 10px; }
+            .play-btn { width: 30px; height: 30px; font-size: 12px; }
+            .books-title { font-size: 18px; margin: 20px 0 15px; }
+
+            /* Yüzen Player */
+            .floating-player { background-color: #1a1a1a; color: #fff; padding: 12px 20px; border-radius: 12px; }
+            .fp-thumb { border-color: rgba(255,255,255,0.1); }
+            .fp-hide-mobile { display: none !important; } 
+            .fp-center { flex: 0; justify-content: flex-end; } 
+            
+            /* Hakkımızda Mobil Görsel Değişimi */
+            .hakkimizda-desktop { display: none !important; }
+            .hakkimizda-mobile { display: block !important; width: 100%; padding: 0 15px; border-radius: 12px; }
+            
+            /* İletişim Görseli Mobilde Küçültme */
+            .contact-section img { max-width: 280px; margin-bottom: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -260,7 +314,11 @@
             <div class="logo">
                 <img src="logo.png" alt="Beetim Logo" onerror="this.src='https://via.placeholder.com/150x45?text=Logo'">
             </div>
-            <nav class="nav-links">
+            <!-- YENİ: Mobilde Gözükecek Hamburger Menü İkonu -->
+            <div class="menu-toggle" id="mobile-menu-btn">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="#333"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+            </div>
+            <nav class="nav-links" id="nav-links">
                 <a href="#hakkimizda-bolumu" id="hakkimizda-link" data-hover-ses="menu-hakkimizda.mp3">Hakkımızda</a>
                 <a href="#" id="uygulamayi-indir" class="active" data-hover-ses="menu-indir.mp3">Uygulamayı İndir</a>
                 <a href="#iletisim-bolumu" id="iletisim-link" data-hover-ses="menu-iletisim.mp3">İletişim</a>
@@ -301,7 +359,8 @@
         </div>
 
         <section class="about-section" id="hakkimizda-bolumu">
-            <img src="hakkimizda.png" data-hover-ses="afis-hakkimizda.mp3" alt="Hakkımızda" onerror="this.src='https://via.placeholder.com/1100x400/fff/333?text=Hakkimizda+PNG'">
+            <img class="hakkimizda-desktop" src="hakkimizda.png" data-hover-ses="afis-hakkimizda.mp3" alt="Hakkımızda" onerror="this.src='https://via.placeholder.com/1100x400/fff/333?text=Hakkimizda+PNG'">
+            <img class="hakkimizda-mobile" src="hakkimizda-mobil.png" data-hover-ses="afis-hakkimizda.mp3" alt="Hakkımızda Mobil" onerror="this.src='https://via.placeholder.com/600x800/fff/333?text=Hakkimizda+Mobil+PNG'">
         </section>
 
         <section class="contact-section" id="iletisim-bolumu">
@@ -316,7 +375,7 @@
                         beetiminc@gmail.com
                     </a>
                     <a href="https://www.instagram.com/beetim.app/" target="_blank" class="contact-btn insta-btn">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.4 5.6 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.6 18.4 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25zM12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.4 5.6 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.6 18.4 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25zM12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0-3-3 3 3 0 0 0-3-3 3 3 0 0 0-3-3z"/></svg>
                         @beetim.app
                     </a>
                 </div>
@@ -394,6 +453,25 @@
     </div>
 
     <script>
+        // ==========================================
+        // YENİ: MOBİL HAMBURGER MENÜ MANTIĞI
+        // ==========================================
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+
+        if(mobileMenuBtn && navLinks) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('menu-acik');
+            });
+
+            // Menüden bir linke tıklayınca menüyü otomatik kapat
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('menu-acik');
+                });
+            });
+        }
+
         // ==========================================
         // GİRİŞ EKRANI VE ERİŞİLEBİLİRLİK ONAYI
         // ==========================================

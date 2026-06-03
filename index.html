@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beetim - Sesli Kitap</title>
-<!-- Standart Tarayıcılar (Chrome, Firefox, Safari sekme ikonu) -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 
-<!-- Apple İkonu (180x180 png dosyası) -->
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
-<!-- Web Uygulaması Meta Etiketleri -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Beetim">
@@ -195,9 +192,12 @@
            MOBİL GÖRÜNÜM DÜZENLEMELERİ (SADECE MOBİL İÇİN)
            ========================================================= */
         @media (max-width: 768px) {
+            /* KESİN ÇÖZÜM: Ekranın sağa kaymasını tamamen engeller */
+            html, body { overflow-x: hidden; width: 100%; }
+
             /* Üst Menü / Header */
             header { background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; padding: 12px 0; }
-            .menu-toggle { display: block; } /* 3 çizgiyi mobilde göster */
+            .menu-toggle { display: block; } 
             
             /* Mobilde Linkleri Gizle ve Açılır Menü Yap */
             .nav-links {
@@ -206,12 +206,13 @@
                 position: absolute;
                 top: 100%;
                 left: 0;
+                right: 0;
                 width: 100%;
                 background: #ffffff;
                 box-shadow: 0 10px 15px rgba(0,0,0,0.05);
                 border-top: 1px solid #f1f1f1;
             }
-            .nav-links.menu-acik { display: flex; } /* JS ile tetiklenecek sınıf */
+            .nav-links.menu-acik { display: flex; } 
             .nav-links a { 
                 margin: 0; 
                 padding: 16px 20px; 
@@ -222,16 +223,35 @@
             }
             .nav-links a:last-child { border-bottom: none; }
 
-            /* Hero (Sarı Afiş) */
-            .hero-box { margin: 20px 0; padding: 0 15px; border-radius: 12px; }
+            /* Hero (Sarı Afiş) - Sağa kaymayı bozan fazlalıklar silindi */
+            .hero-box { 
+                margin: 20px 0 45px 0; /* Yan boşluklar silindi, kapsayıcı halledecek */
+                padding: 25px 0 0 0; 
+                border-radius: 15px; 
+                overflow: visible !important; 
+            }
+            .hero-box img { 
+                width: 100%; 
+                max-width: none; 
+                transform: translateY(25px); 
+                margin: 0 auto;
+            }
 
-            /* Kitaplar (Yanyana 2 tane durması için) */
-            .books-track { gap: 12px; } /* Kartlar arası boşluk kısaltıldı */
-            .book-card { width: 145px; padding: 10px; border-radius: 12px; }
+            /* Kitaplar ve Şık Play Butonu */
+            .books-track { gap: 12px; } 
+            .book-card { width: 145px; padding: 12px; border-radius: 12px; } 
             .book-card h3 { font-size: 13px; }
-            .book-card p { font-size: 11px; margin-bottom: 10px; }
-            .play-btn { width: 30px; height: 30px; font-size: 12px; }
-            .books-title { font-size: 18px; margin: 20px 0 15px; }
+            .book-card p { font-size: 11px; margin-bottom: 12px; }
+            
+            /* YENİ HARİKA PLAY BUTONU */
+            .play-btn { 
+                width: 38px; height: 38px; font-size: 16px; 
+                margin: 0 auto; /* Tam ortaya hizalar */
+                box-shadow: 0 4px 10px rgba(229, 169, 19, 0.3); /* Şık gölge efekti */
+                padding-left: 3px; /* Üçgen ikonunu optik olarak ortalar */
+            }
+            
+            .books-title { font-size: 18px; margin: 20px 0 15px; padding: 0; } /* Fazla boşluk silindi */
 
             /* Yüzen Player */
             .floating-player { background-color: #1a1a1a; color: #fff; padding: 12px 20px; border-radius: 12px; }
@@ -241,7 +261,7 @@
             
             /* Hakkımızda Mobil Görsel Değişimi */
             .hakkimizda-desktop { display: none !important; }
-            .hakkimizda-mobile { display: block !important; width: 100%; padding: 0 15px; border-radius: 12px; }
+            .hakkimizda-mobile { display: block !important; width: 100%; padding: 0; border-radius: 12px; } /* Fazla boşluk silindi */
             
             /* İletişim Görseli Mobilde Küçültme */
             .contact-section img { max-width: 280px; margin-bottom: 15px; }
@@ -314,7 +334,6 @@
             <div class="logo">
                 <img src="logo.png" alt="Beetim Logo" onerror="this.src='https://via.placeholder.com/150x45?text=Logo'">
             </div>
-            <!-- YENİ: Mobilde Gözükecek Hamburger Menü İkonu -->
             <div class="menu-toggle" id="mobile-menu-btn">
                 <svg viewBox="0 0 24 24" width="28" height="28" fill="#333"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
             </div>

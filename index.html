@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beetim - Sesli Kitap</title>
+<!-- Standart Tarayıcılar (Chrome, Firefox, Safari sekme ikonu) -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 
+<!-- Apple İkonu (180x180 png dosyası) -->
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
+<!-- Web Uygulaması Meta Etiketleri -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Beetim">
@@ -188,10 +191,17 @@
         @keyframes introPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 169, 19, 0.7); } 70% { transform: scale(1.15); box-shadow: 0 0 0 40px rgba(229, 169, 19, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 169, 19, 0); } }
 
+        @media (max-width: 768px) {
+            .floating-player { background-color: #1a1a1a; color: #fff; padding: 12px 20px; border-radius: 12px; }
+            .fp-thumb { border-color: rgba(255,255,255,0.1); }
+            .fp-hide-mobile { display: none !important; } 
+            .fp-center { flex: 0; justify-content: flex-end; } 
+        }
+
         /* =========================================================
            MOBİL GÖRÜNÜM DÜZENLEMELERİ (SADECE MOBİL İÇİN)
            ========================================================= */
-        @media (max-width: 768px) {
+        @media (max-width: 576px) {
             /* KESİN ÇÖZÜM: Ekranın sağa kaymasını tamamen engeller */
             html, body { overflow-x: hidden; width: 100%; }
 
@@ -223,18 +233,19 @@
             }
             .nav-links a:last-child { border-bottom: none; }
 
-            /* Hero (Sarı Afiş) - Sağa kaymayı bozan fazlalıklar silindi */
+            /* Hero (Sarı Afiş) - TAM OTURTULDU (Taşma İptal Edildi) */
             .hero-box { 
-                margin: 20px 0 45px 0; /* Yan boşluklar silindi, kapsayıcı halledecek */
-                padding: 25px 0 0 0; 
+                margin: 20px 0 30px 0; 
+                padding: 0 15px; 
                 border-radius: 15px; 
-                overflow: visible !important; 
+                overflow: hidden !important; /* Dışarı taşmayı tamamen kapattık */
             }
             .hero-box img { 
                 width: 100%; 
                 max-width: none; 
-                transform: translateY(25px); 
+                transform: none !important; /* Bütün kaydırmaları sıfırladık */
                 margin: 0 auto;
+                display: block;
             }
 
             /* Kitaplar ve Şık Play Butonu */
@@ -251,17 +262,11 @@
                 padding-left: 3px; /* Üçgen ikonunu optik olarak ortalar */
             }
             
-            .books-title { font-size: 18px; margin: 20px 0 15px; padding: 0; } /* Fazla boşluk silindi */
+            .books-title { font-size: 18px; margin: 20px 0 15px; padding: 0 15px; }
 
-            /* Yüzen Player */
-            .floating-player { background-color: #1a1a1a; color: #fff; padding: 12px 20px; border-radius: 12px; }
-            .fp-thumb { border-color: rgba(255,255,255,0.1); }
-            .fp-hide-mobile { display: none !important; } 
-            .fp-center { flex: 0; justify-content: flex-end; } 
-            
             /* Hakkımızda Mobil Görsel Değişimi */
             .hakkimizda-desktop { display: none !important; }
-            .hakkimizda-mobile { display: block !important; width: 100%; padding: 0; border-radius: 12px; } /* Fazla boşluk silindi */
+            .hakkimizda-mobile { display: block !important; width: 100%; padding: 0 15px; border-radius: 12px; }
             
             /* İletişim Görseli Mobilde Küçültme */
             .contact-section img { max-width: 280px; margin-bottom: 15px; }
@@ -394,7 +399,7 @@
                         beetiminc@gmail.com
                     </a>
                     <a href="https://www.instagram.com/beetim.app/" target="_blank" class="contact-btn insta-btn">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.4 5.6 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.6 18.4 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25zM12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0-3-3 3 3 0 0 0-3-3 3 3 0 0 0-3-3z"/></svg>
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.4 5.6 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.6 18.4 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25zM12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0-3-3 3 3 0 0 0-3-3 3 3 0 0 0-3-3 3 3 0 0 0-3-3z"/></svg>
                         @beetim.app
                     </a>
                 </div>

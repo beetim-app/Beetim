@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beetim - Sesli Kitap</title>
-<!-- Standart Tarayıcılar (Chrome, Firefox, Safari sekme ikonu) -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 
-<!-- Apple İkonu (180x180 png dosyası) -->
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
-<!-- Web Uygulaması Meta Etiketleri -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Beetim">
@@ -205,8 +202,19 @@
             /* KESİN ÇÖZÜM: Ekranın sağa kaymasını tamamen engeller */
             html, body { overflow-x: hidden; width: 100%; }
 
-            /* Üst Menü / Header */
-            header { background: #ffffff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; padding: 12px 0; }
+            /* Üst Menü / Header - Mobilde sabit kalması için eklendi */
+            header { 
+                background: #ffffff !important; 
+                backdrop-filter: none !important; 
+                -webkit-backdrop-filter: none !important; 
+                padding: 12px 0; 
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                width: 100%;
+            }
+            body { padding-top: 70px; } /* Menü eklendiğinde altındaki içerik ezilmesin diye */
+            
             .menu-toggle { display: block; } 
             
             /* Mobilde Linkleri Gizle ve Açılır Menü Yap */
@@ -374,7 +382,7 @@
         
         <div class="books-carousel-container" id="carouselContainer">
             <div class="books-track" id="booksTrack">
-                <div class="book-card" onclick="kitapSec('Güneşin Oğlu', 'Jack London', 'kitap1.png', '', 0)" data-hover-ses="kitap-gunesin-oglu.mp3">
+                <div class="book-card" onclick="kitapSec('Güneşin Oğlu', 'Jack London', 'kitap1.png', 'gunesin-oglu-seslikitap.mp3', 0)" data-hover-ses="kitap-gunesin-oglu.mp3">
                     <img src="kitap1.png" alt="Güneşin Oğlu" onerror="this.src='https://via.placeholder.com/150x150/eee/333?text=Kitap'">
                     <h3>Güneşin Oğlu</h3><p>Jack London</p>
                     <div class="play-btn">
@@ -388,7 +396,7 @@
                         <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                     </div>
                 </div>
-                <div class="book-card" onclick="kitapSec('Satranç', 'Stefan Zweig', 'kitap3.png', '', 2)" data-hover-ses="kitap-satranc.mp3">
+                <div class="book-card" onclick="kitapSec('Satranç', 'Stefan Zweig', 'kitap3.png', 'satranc-seslikitap.mp3', 2)" data-hover-ses="kitap-satranc.mp3">
                     <img src="kitap3.png" alt="Satranç" onerror="this.src='https://via.placeholder.com/150x150/eee/333?text=Kitap'">
                     <h3>Satranç</h3><p>Stefan Zweig</p>
                     <div class="play-btn">
@@ -422,7 +430,7 @@
                         beetiminc@gmail.com
                     </a>
                     <a href="https://www.instagram.com/beetim.app/" target="_blank" class="contact-btn insta-btn">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.4 5.6 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.6 18.4 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25zM12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0-3-3 3 3 0 0 0-3-3 3 3 0 0 0-3-3 3 3 0 0 0-3-3z"/></svg>
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.4 5.6 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.6 18.4 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25zM12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0-3-3 3 3 0 0 0-3-3 3 3 0 0 0-3-3 3 3 0 0 0-3-3 3 3 0 0 0-3-3z"/></svg>
                         @beetim.app
                     </a>
                 </div>
@@ -704,9 +712,9 @@
         const svgPauseBig = `<svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
 
         const playlist = [
-            { isim: 'Güneşin Oğlu', yazar: 'Jack London', resim: 'kitap1.png', ses: '' },
+            { isim: 'Güneşin Oğlu', yazar: 'Jack London', resim: 'kitap1.png', ses: 'gunesin-oglu-seslikitap.mp3' },
             { isim: 'Öğrenci Kız', yazar: 'Osamu Dazai', resim: 'kitap2.png', ses: 'ogrenci-kiz-seslikitap.mp3' },
-            { isim: 'Satranç', yazar: 'Stefan Zweig', resim: 'kitap3.png', ses: '' },
+            { isim: 'Satranç', yazar: 'Stefan Zweig', resim: 'kitap3.png', ses: 'satranc-seslikitap.mp3' },
             { isim: 'Mutlu Prens', yazar: 'Oscar Wilde', resim: 'kitap4.png', ses: 'mutlu-prens-seslikitap.mp3' }
         ];
         let currentBookIndex = -1;

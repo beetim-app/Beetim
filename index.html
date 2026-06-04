@@ -238,32 +238,47 @@
                 margin: 20px 0 30px 0; 
                 padding: 0 15px; 
                 border-radius: 15px; 
-                overflow: hidden !important; /* Dışarı taşmayı tamamen kapattık */
+                overflow: hidden !important; 
             }
             .hero-box img { 
                 width: 100%; 
                 max-width: none; 
-                transform: none !important; /* Bütün kaydırmaları sıfırladık */
+                transform: none !important; 
                 margin: 0 auto;
                 display: block;
             }
 
-            /* Kitaplar ve Şık Play Butonu */
-            .books-track { gap: 12px; } 
-            .book-card { width: 145px; padding: 12px; border-radius: 12px; } 
+            /* --- BURAYA DİKKAT: BAŞLIK TAMAMEN ORİJİNAL HALİNE (SOLA) ALINDI --- */
+            .books-title { font-size: 18px; margin: 20px 0 15px; padding: 0 15px; text-align: left; }
+            
+            .books-carousel-container {
+                width: 100%;
+                margin: 45;
+                padding: -10px; /* Mobilde doğal kenar boşluğu */
+            }
+            
+            .books-track { 
+                gap: 12px; 
+                padding: 0; /* Ortalama işlemlerini tamamen sildik */
+            } 
+            
+            .book-card { 
+                width: 145px; 
+                padding: 12px; 
+                border-radius: 12px; 
+            } 
             .book-card h3 { font-size: 13px; }
             .book-card p { font-size: 11px; margin-bottom: 12px; }
             
-            /* YENİ HARİKA PLAY BUTONU */
+            /* EMOJİ SORUNUNU ÇÖZEN ŞIK SVG PLAY BUTONU */
             .play-btn { 
-                width: 38px; height: 38px; font-size: 16px; 
-                margin: 0 auto; /* Tam ortaya hizalar */
-                box-shadow: 0 4px 10px rgba(229, 169, 19, 0.3); /* Şık gölge efekti */
-                padding-left: 3px; /* Üçgen ikonunu optik olarak ortalar */
+                width: 38px; height: 38px; font-size: 18px; 
+                margin: 0 auto; 
+                box-shadow: 0 4px 10px rgba(229, 169, 19, 0.3); 
+                padding-left: 3px; 
+                display: flex; align-items: center; justify-content: center;
             }
             
-            .books-title { font-size: 18px; margin: 20px 0 15px; padding: 0 15px; }
-
             /* Hakkımızda Mobil Görsel Değişimi */
             .hakkimizda-desktop { display: none !important; }
             .hakkimizda-mobile { display: block !important; width: 100%; padding: 0 15px; border-radius: 12px; }
@@ -362,22 +377,30 @@
                 <div class="book-card" onclick="kitapSec('Güneşin Oğlu', 'Jack London', 'kitap1.png', '', 0)" data-hover-ses="kitap-gunesin-oglu.mp3">
                     <img src="kitap1.png" alt="Güneşin Oğlu" onerror="this.src='https://via.placeholder.com/150x150/eee/333?text=Kitap'">
                     <h3>Güneşin Oğlu</h3><p>Jack London</p>
-                    <div class="play-btn">▶</div>
+                    <div class="play-btn">
+                        <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
                 </div>
                 <div class="book-card" onclick="kitapSec('Öğrenci Kız', 'Osamu Dazai', 'kitap2.png', 'ogrenci-kiz-seslikitap.mp3', 1)" data-hover-ses="kitap-ogrenci-kiz.mp3">
                     <img src="kitap2.png" alt="Öğrenci Kız" onerror="this.src='https://via.placeholder.com/150x150/eee/333?text=Kitap'">
                     <h3>Öğrenci Kız</h3><p>Osamu Dazai</p>
-                    <div class="play-btn">▶</div>
+                    <div class="play-btn">
+                        <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
                 </div>
                 <div class="book-card" onclick="kitapSec('Satranç', 'Stefan Zweig', 'kitap3.png', '', 2)" data-hover-ses="kitap-satranc.mp3">
                     <img src="kitap3.png" alt="Satranç" onerror="this.src='https://via.placeholder.com/150x150/eee/333?text=Kitap'">
                     <h3>Satranç</h3><p>Stefan Zweig</p>
-                    <div class="play-btn">▶</div>
+                    <div class="play-btn">
+                        <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
                 </div>
                 <div class="book-card" onclick="kitapSec('Mutlu Prens', 'Oscar Wilde', 'kitap4.png', 'mutlu-prens-seslikitap.mp3', 3)" data-hover-ses="kitap-mutlu-prens.mp3">
                     <img src="kitap4.png" alt="Mutlu Prens" onerror="this.src='https://via.placeholder.com/150x150/eee/333?text=Kitap'">
                     <h3>Mutlu Prens</h3><p>Oscar Wilde</p>
-                    <div class="play-btn">▶</div>
+                    <div class="play-btn">
+                        <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
                 </div>
             </div>
         </div>
